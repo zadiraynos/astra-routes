@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { routes } from './data/routes'
 import './index.css'
 
@@ -13,11 +13,23 @@ const categories = [
 export default function App() {
   const [selectedRoute, setSelectedRoute] = useState(routes[0])
   const [search, setSearch] = useState('')
-  const [openCategories, setOpenCategories] = useState(categories)
+  const [openCategories, setOpenCategories] = useState([])
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState([])
   const [galleryIndex, setGalleryIndex] = useState(0)
+  useEffect(() => {
+  if (galleryOpen) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = 'auto'
+  }
+
+  return () => {
+    document.body.style.overflow = 'auto'
+  }
+}, [galleryOpen])
 
   const route = selectedRoute
 
@@ -77,64 +89,81 @@ export default function App() {
     )
   }
 
+  const selectRoute = (item) => {
+    setSelectedRoute(item)
+    setMobileMenuOpen(false)
+  }
+
   return (
     <main className="page">
-      <aside className="sidebar">
-        <div className="logo">Astra Marine</div>
+      <aside className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-top">
+          <div className="logo">Astra Marine</div>
 
-        <input
-          className="search"
-          placeholder="Найти маршрут, теплоход, причал..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+          <button
+            className="mobile-menu-button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            ☰ Маршруты
+          </button>
+        </div>
 
-        <nav className="route-groups">
-          {categories.map((category) => {
-            const categoryRoutes = filteredRoutes.filter(
-              (item) => item.category === category
-            )
+        <div className="sidebar-content">
+          <input
+            className="search"
+            placeholder="Найти маршрут, теплоход, причал..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-            if (categoryRoutes.length === 0) return null
+          <nav className="route-groups">
+            {categories.map((category) => {
+              const categoryRoutes = filteredRoutes.filter(
+                (item) => item.category === category
+              )
 
-            const isSearchActive = search.trim().length > 0
-            const isOpen = isSearchActive || openCategories.includes(category)
+              if (categoryRoutes.length === 0) return null
 
-            return (
-              <div className="route-group" key={category}>
-                <button
-                  className="group-title"
-                  onClick={() => toggleCategory(category)}
-                >
-                  <span>{category}</span>
-                  <span className={`group-arrow ${isOpen ? 'open' : ''}`}>
-                    ›
-                  </span>
-                </button>
+              const isSearchActive = search.trim().length > 0
+              const isOpen =
+                isSearchActive || openCategories.includes(category)
 
-                {isOpen && (
-                  <div className="group-list">
-                    {categoryRoutes.map((item) => (
-                      <button
-                        key={item.id}
-                        className={`menu-item ${
-                          route.id === item.id ? 'active' : ''
-                        }`}
-                        onClick={() => setSelectedRoute(item)}
-                      >
-                        {item.title}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+              return (
+                <div className="route-group" key={category}>
+                  <button
+                    className="group-title"
+                    onClick={() => toggleCategory(category)}
+                  >
+                    <span>{category}</span>
+                    <span className={`group-arrow ${isOpen ? 'open' : ''}`}>
+                      ›
+                    </span>
+                  </button>
 
-          {filteredRoutes.length === 0 && (
-            <div className="empty-result">Маршруты не найдены</div>
-          )}
-        </nav>
+                  {isOpen && (
+                    <div className="group-list">
+                      {categoryRoutes.map((item) => (
+                        <button
+                          key={item.id}
+                          className={`menu-item ${
+                            route.id === item.id ? 'active' : ''
+                          }`}
+                          onClick={() => selectRoute(item)}
+                        >
+                          {item.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+
+            {filteredRoutes.length === 0 && (
+              <div className="empty-result">Маршруты не найдены</div>
+            )}
+          </nav>
+        </div>
       </aside>
 
       <section className="content">
@@ -146,25 +175,16 @@ export default function App() {
           </div>
 
           <div className="hero-side">
+            <div className="hero-card">
+              <span>Теплоход</span>
+              <strong>{route.ship}</strong>
+            </div>
 
-  <div className="hero-card">
-    <span>Теплоход</span>
-    <strong>{route.ship}</strong>
-  </div>
-
-  <div className="version-card">
-
-    <span>
-      Внутренний портал
-    </span>
-
-    <strong>
-      Astra Marine v0.1
-    </strong>
-
-  </div>
-
-</div>
+            <div className="version-card">
+              <span>Внутренний портал</span>
+              <strong>Astra Marine v0.1</strong>
+            </div>
+          </div>
         </header>
 
         <section className="stats-grid">
@@ -221,26 +241,18 @@ export default function App() {
           </div>
 
           <div className="card">
+            <h2>Билеты</h2>
+            <p>{route.tickets}</p>
+          </div>
 
-<h2>
-Служебная информация
-</h2>
+          <div className="card">
+            <h2>Служебная информация</h2>
 
-<div className="info-list">
-
-<Row
-label='Последнее обновление'
-value={route.updated}
-/>
-
-<Row
-label='Ответственный'
-value={route.owner}
-/>
-
-</div>
-
-</div>
+            <div className="info-list">
+              <Row label="Последнее обновление" value={route.updated} />
+              <Row label="Ответственный" value={route.owner} />
+            </div>
+          </div>
         </section>
       </section>
 
@@ -275,16 +287,18 @@ value={route.owner}
             </div>
           )}
         </div>
-      )}<footer className="feedback-footer">
-  <a
-    href="https://forms.yandex.ru/u/6a0b7acbd04688132b038a5d"
-    target="_blank"
-    rel="noreferrer"
-    className="feedback-link"
-  >
-    💬 Обратная связь / предложить улучшение
-  </a>
-</footer>
+      )}
+
+      <footer className="feedback-footer">
+        <a
+          href="https://forms.yandex.ru/u/6a0b7acbd04688132b038a5d"
+          target="_blank"
+          rel="noreferrer"
+          className="feedback-link"
+        >
+          💬 Обратная связь
+        </a>
+      </footer>
     </main>
   )
 }
