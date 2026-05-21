@@ -783,6 +783,8 @@ width:100%;
 .mobile-search-results{
 width:100%;
 }
+
+}
 .login-page{
 min-height:100vh;
 display:flex;
@@ -853,5 +855,4 @@ background:#38bdf8;
 font-weight:800;
 
 font-size:16px;
-}
 }
