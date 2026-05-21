@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { routes } from './data/routes'
+import { news } from './data/news'
 import './index.css'
 
 const categories = [
@@ -12,6 +13,7 @@ const categories = [
 
 export default function App() {
   const [selectedRoute, setSelectedRoute] = useState(routes[0])
+  const [page, setPage] = useState('home')
   const [search, setSearch] = useState('')
   const [openCategories, setOpenCategories] = useState([])
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -19,19 +21,20 @@ export default function App() {
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState([])
   const [galleryIndex, setGalleryIndex] = useState(0)
-  useEffect(() => {
-  if (galleryOpen) {
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = 'auto'
-  }
-
-  return () => {
-    document.body.style.overflow = 'auto'
-  }
-}, [galleryOpen])
 
   const route = selectedRoute
+
+  useEffect(() => {
+    if (galleryOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [galleryOpen])
 
   const toggleCategory = (category) => {
     setOpenCategories((prev) =>
@@ -67,6 +70,12 @@ export default function App() {
     return searchText.includes(query)
   })
 
+  const selectRoute = (item) => {
+    setSelectedRoute(item)
+    setPage('routes')
+    setMobileMenuOpen(false)
+  }
+
   const openGallery = (images, index = 0) => {
     setGalleryImages(images)
     setGalleryIndex(index)
@@ -89,11 +98,6 @@ export default function App() {
     )
   }
 
-  const selectRoute = (item) => {
-    setSelectedRoute(item)
-    setMobileMenuOpen(false)
-  }
-
   return (
     <main className="page">
       <aside className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
@@ -109,6 +113,16 @@ export default function App() {
         </div>
 
         <div className="sidebar-content">
+          <button
+            className={`home-button ${page === 'home' ? 'active' : ''}`}
+            onClick={() => {
+              setPage('home')
+              setMobileMenuOpen(false)
+            }}
+          >
+            🏠 Главная
+          </button>
+
           <input
             className="search"
             placeholder="Найти маршрут, теплоход, причал..."
@@ -167,93 +181,130 @@ export default function App() {
       </aside>
 
       <section className="content">
-        <header className="hero">
-          <div>
-            <p className="eyebrow">Паспорт маршрута</p>
-            <h1>{route.title}</h1>
-            <p className="hero-text">{route.description}</p>
-          </div>
+        {page === 'home' ? (
+          <section className="home-page">
+            <div className="home-hero">
+              <p className="eyebrow">Astra Portal</p>
 
-          <div className="hero-side">
-            <div className="hero-card">
-              <span>Теплоход</span>
-              <strong>{route.ship}</strong>
+              <h1>Главная страница портала</h1>
+
+              <p>
+                Новости, важные изменения, новые рейсы и актуальная информация
+                для сотрудников.
+              </p>
+
+              <button className="home-cta" onClick={() => setPage('routes')}>
+                Перейти к маршрутам
+              </button>
             </div>
 
-            <div className="version-card">
-              <span>Внутренний портал</span>
-              <strong>Astra Marine v0.1</strong>
+            <div className="news-grid">
+              {news.map((item) => (
+                <article className="news-card" key={item.id}>
+                  <div className="news-icon">{item.icon}</div>
+
+                  <span>{item.type}</span>
+
+                  <h2>{item.title}</h2>
+
+                  <p>{item.text}</p>
+
+                  <small>{item.date}</small>
+                </article>
+              ))}
             </div>
-          </div>
-        </header>
+          </section>
+        ) : (
+          <>
+            <header className="hero">
+              <div>
+                <p className="eyebrow">Паспорт маршрута</p>
+                <h1>{route.title}</h1>
+                <p className="hero-text">{route.description}</p>
+              </div>
 
-        <section className="stats-grid">
-          <Info label="Отправление" value={route.time} />
-          <Info label="Длительность" value={route.duration} />
-          <Info label="Протяжённость" value={route.distance} />
-          <Info label="Период" value={route.season} />
-        </section>
+              <div className="hero-side">
+                <div className="hero-card">
+                  <span>Теплоход</span>
+                  <strong>{route.ship}</strong>
+                </div>
 
-        <section className="main-grid">
-          <div className="card wide">
-            <h2>Базовая информация</h2>
+                <div className="version-card">
+                  <span>Внутренний портал</span>
+                  <strong>Astra Marine v0.1</strong>
+                </div>
+              </div>
+            </header>
 
-            <div className="info-list">
-              <Row label="Категория" value={route.category} />
-              <Row label="Формат" value={route.format} />
-              <Row label="Причал" value={route.pier} />
-              <Row label="Аудиоэкскурсия" value={route.languages} />
-              <Row label="Маршрут круговой" value="Да" />
-            </div>
-          </div>
+            <section className="stats-grid">
+              <Info label="Отправление" value={route.time} />
+              <Info label="Длительность" value={route.duration} />
+              <Info label="Протяжённость" value={route.distance} />
+              <Info label="Период" value={route.season} />
+            </section>
 
-          <button
-            className="card image-card"
-            style={{ backgroundImage: `url(${route.shipImage})` }}
-            onClick={() => openGallery(route.shipGallery)}
-          >
-            <div className="image-overlay">
-              <span>Теплоход</span>
-              <strong>{route.ship}</strong>
-            </div>
-          </button>
+            <section className="main-grid">
+              <div className="card wide">
+                <h2>Базовая информация</h2>
 
-          <button
-            className="card image-card"
-            style={{ backgroundImage: `url(${route.mapImage})` }}
-            onClick={() => openGallery(route.mapGallery)}
-          >
-            <div className="image-overlay">
-              <span>Карта маршрута</span>
-              <strong>{route.title}</strong>
-            </div>
-          </button>
+                <div className="info-list">
+                  <Row label="Категория" value={route.category} />
+                  <Row label="Формат" value={route.format} />
+                  <Row label="Причал" value={route.pier} />
+                  <Row label="Аудиоэкскурсия" value={route.languages} />
+                  <Row label="Маршрут круговой" value="Да" />
+                </div>
+              </div>
 
-          <div className="card">
-            <h2>Ограничения</h2>
-            <p>{route.restrictions}</p>
-            <div className="note">Альтернатива: {route.alternative}</div>
-          </div>
+              <button
+                className="card image-card"
+                style={{ backgroundImage: `url(${route.shipImage})` }}
+                onClick={() => openGallery(route.shipGallery)}
+              >
+                <div className="image-overlay">
+                  <span>Теплоход</span>
+                  <strong>{route.ship}</strong>
+                </div>
+              </button>
 
-          <div className="card">
-            <h2>Ресторан</h2>
-            <p>{route.restaurant}</p>
-          </div>
+              <button
+                className="card image-card"
+                style={{ backgroundImage: `url(${route.mapImage})` }}
+                onClick={() => openGallery(route.mapGallery)}
+              >
+                <div className="image-overlay">
+                  <span>Карта маршрута</span>
+                  <strong>{route.title}</strong>
+                </div>
+              </button>
 
-          <div className="card">
-            <h2>Билеты</h2>
-            <p>{route.tickets}</p>
-          </div>
+              <div className="card">
+                <h2>Ограничения</h2>
+                <p>{route.restrictions}</p>
+                <div className="note">Альтернатива: {route.alternative}</div>
+              </div>
 
-          <div className="card">
-            <h2>Служебная информация</h2>
+              <div className="card">
+                <h2>Ресторан</h2>
+                <p>{route.restaurant}</p>
+              </div>
 
-            <div className="info-list">
-              <Row label="Последнее обновление" value={route.updated} />
-              <Row label="Ответственный" value={route.owner} />
-            </div>
-          </div>
-        </section>
+              <div className="card">
+                <h2>Билеты</h2>
+                <p>{route.tickets}</p>
+              </div>
+
+              <div className="card">
+                <h2>Служебная информация</h2>
+
+                <div className="info-list">
+                  <Row label="Последнее обновление" value={route.updated} />
+                  <Row label="Ответственный" value={route.owner} />
+                </div>
+              </div>
+            </section>
+          </>
+        )}
       </section>
 
       {galleryOpen && (
