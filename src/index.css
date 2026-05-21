@@ -772,18 +772,15 @@ button {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.65);
     font-size: 14px;
-  }
-}@media (max-width: 1000px) {
-  .mobile-search {
-    font-size: 16px;
-    transform: none;
-  }
+  }.mobile-search{
+font-size:16px;
+}
 
-  .mobile-search-wrap {
-    width: 100%;
-  }
+.mobile-search-wrap{
+width:100%;
+}
 
-  .mobile-search-results {
-    width: 100%;
-  }
+.mobile-search-results{
+width:100%;
+}
 }
