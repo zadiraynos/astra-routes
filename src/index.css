@@ -856,3 +856,28 @@ font-weight:800;
 
 font-size:16px;
 }
+.route-badge{
+display:inline-flex;
+
+margin-bottom:16px;
+
+padding:8px 14px;
+
+border-radius:999px;
+
+background:#ff6b35;
+
+color:white;
+
+font-size:13px;
+
+font-weight:800;
+
+box-shadow:
+0 8px 20px rgba(
+255,
+107,
+53,
+0.3
+);
+}

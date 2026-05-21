@@ -291,6 +291,11 @@ export default function App() {
             <header className="hero">
               <div>
                 <p className="eyebrow">Паспорт маршрута</p>
+                {route.badge && (
+              <div className="route-badge">
+                {route.badge}
+              </div>
+               )}
                 <h1>{route.title}</h1>
                 <p className="hero-text">{route.description}</p>
               </div>
