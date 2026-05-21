@@ -115,14 +115,38 @@ export default function App() {
           </button>
         </div>
 
-        <div className="mobile-search-wrap">
-          <input
-            className="search mobile-search"
-            placeholder="Найти маршрут, теплоход, причал..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+<div className="mobile-search-wrap">
+  <input
+    className="search mobile-search"
+    placeholder="Найти маршрут, теплоход, причал..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+
+  {search.trim().length > 0 && (
+    <div className="mobile-search-results">
+      {filteredRoutes.length > 0 ? (
+        filteredRoutes.map((item) => (
+          <button
+            key={item.id}
+            className="mobile-search-result"
+            onClick={() => {
+              selectRoute(item)
+              setSearch('')
+            }}
+          >
+            <span>{item.category}</span>
+            <strong>{item.title}</strong>
+          </button>
+        ))
+      ) : (
+        <div className="mobile-search-empty">
+          Ничего не найдено
         </div>
+      )}
+    </div>
+  )}
+</div>
 
         <div className="sidebar-content">
           <button
