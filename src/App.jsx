@@ -25,11 +25,7 @@ export default function App() {
   const route = selectedRoute
 
   useEffect(() => {
-    if (galleryOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
+    document.body.style.overflow = galleryOpen ? 'hidden' : 'auto'
 
     return () => {
       document.body.style.overflow = 'auto'
@@ -70,6 +66,11 @@ export default function App() {
     return searchText.includes(query)
   })
 
+  const goHome = () => {
+    setPage('home')
+    setMobileMenuOpen(false)
+  }
+
   const selectRoute = (item) => {
     setSelectedRoute(item)
     setPage('routes')
@@ -102,7 +103,9 @@ export default function App() {
     <main className="page">
       <aside className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-top">
-          <div className="logo">Astra Marine</div>
+          <button className="logo logo-button" onClick={goHome}>
+            Astra Marine
+          </button>
 
           <button
             className="mobile-menu-button"
@@ -112,19 +115,25 @@ export default function App() {
           </button>
         </div>
 
+        <div className="mobile-search-wrap">
+          <input
+            className="search mobile-search"
+            placeholder="Найти маршрут, теплоход, причал..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
         <div className="sidebar-content">
           <button
             className={`home-button ${page === 'home' ? 'active' : ''}`}
-            onClick={() => {
-              setPage('home')
-              setMobileMenuOpen(false)
-            }}
+            onClick={goHome}
           >
             🏠 Главная
           </button>
 
           <input
-            className="search"
+            className="search desktop-search"
             placeholder="Найти маршрут, теплоход, причал..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -186,10 +195,10 @@ export default function App() {
             <div className="home-hero">
               <p className="eyebrow">Astra Portal</p>
 
-              <h1>Главная страница портала</h1>
+              <h1>Добро пожаловать в Astra Portal</h1>
 
               <p>
-                Новости, важные изменения, новые рейсы и актуальная информация
+                Новости, важные изменения, новые рейсы и актуальные подсказки
                 для сотрудников.
               </p>
 
@@ -202,13 +211,9 @@ export default function App() {
               {news.map((item) => (
                 <article className="news-card" key={item.id}>
                   <div className="news-icon">{item.icon}</div>
-
                   <span>{item.type}</span>
-
                   <h2>{item.title}</h2>
-
                   <p>{item.text}</p>
-
                   <small>{item.date}</small>
                 </article>
               ))}
