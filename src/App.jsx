@@ -12,6 +12,10 @@ const categories = [
 ]
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [login, setLogin] = useState('')
+  const [password, setPassword] = useState('')
+
   const [selectedRoute, setSelectedRoute] = useState(routes[0])
   const [page, setPage] = useState('home')
   const [search, setSearch] = useState('')
@@ -31,6 +35,14 @@ export default function App() {
       document.body.style.overflow = 'auto'
     }
   }, [galleryOpen])
+
+  const fakeLogin = () => {
+    if (login === 'astra' && password === 'marine2026') {
+      setIsLoggedIn(true)
+    } else {
+      alert('Неверный логин или пароль')
+    }
+  }
 
   const toggleCategory = (category) => {
     setOpenCategories((prev) =>
@@ -96,6 +108,37 @@ export default function App() {
     e.stopPropagation()
     setGalleryIndex((prev) =>
       prev === 0 ? galleryImages.length - 1 : prev - 1
+    )
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <main className="login-page">
+        <div className="login-card">
+          <h1>Astra Portal</h1>
+
+          <p>Внутренний портал сотрудников</p>
+
+          <input
+            className="login-input"
+            placeholder="Логин"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+          />
+
+          <input
+            className="login-input"
+            type="password"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button className="login-button" onClick={fakeLogin}>
+            Войти
+          </button>
+        </div>
+      </main>
     )
   }
 
