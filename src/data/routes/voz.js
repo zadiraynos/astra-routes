@@ -13,9 +13,9 @@ export const voz = {
 
   owner: 'Татьяна Николаева',
 
-  ship: 'Астра',
+  ship: 'Ряпушка',
 
-  shipImage: `${base}ships/astra.jpg`,
+  shipImage: `${base}ships/ryapushka.jpg`,
 
   shipGallery: [
     `${base}ships/ryapushka.jpg`,
@@ -31,9 +31,9 @@ export const voz = {
 
   pier: 'Спуск со львами',
 
-  time: 'вечер',
+  time: '20:20',
 
-  duration: '2 часа',
+  duration: '2 часа 15 минут',
 
   distance: 'Финский залив',
 
