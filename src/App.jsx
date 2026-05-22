@@ -25,6 +25,8 @@ export default function App() {
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [galleryImages, setGalleryImages] = useState([])
   const [galleryIndex, setGalleryIndex] = useState(0)
+  const [touchStart, setTouchStart] = useState(null)
+  const [touchEnd, setTouchEnd] = useState(null)
 
   const route = selectedRoute
 
@@ -44,6 +46,12 @@ export default function App() {
       setIsLoggedIn(true)
     } else {
       alert('Неверный логин или пароль')
+    }
+  }
+
+  const handleLoginKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      fakeLogin()
     }
   }
 
@@ -115,6 +123,33 @@ export default function App() {
     )
   }
 
+  const handleTouchStart = (e) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+
+    if (isLeftSwipe && galleryImages.length > 1) {
+      setGalleryIndex((prev) => (prev + 1) % galleryImages.length)
+    }
+
+    if (isRightSwipe && galleryImages.length > 1) {
+      setGalleryIndex((prev) =>
+        prev === 0 ? galleryImages.length - 1 : prev - 1
+      )
+    }
+  }
+
   if (!isLoggedIn) {
     return (
       <main className="login-page">
@@ -128,6 +163,7 @@ export default function App() {
             placeholder="Логин"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
+            onKeyDown={handleLoginKeyDown}
           />
 
           <input
@@ -136,6 +172,7 @@ export default function App() {
             placeholder="Пароль"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleLoginKeyDown}
           />
 
           <button className="login-button" onClick={fakeLogin}>
@@ -425,6 +462,9 @@ export default function App() {
             className="gallery-image"
             alt="Изображение маршрута"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           />
 
           {galleryImages.length > 1 && (
