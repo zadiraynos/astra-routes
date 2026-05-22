@@ -880,4 +880,30 @@ box-shadow:
 53,
 0.3
 );
+.program-list{
+display:grid;
+gap:16px;
+}
+
+.program-item{
+padding:18px;
+border-radius:18px;
+background:#f4f8fc;
+}
+
+.program-item strong{
+display:block;
+margin-bottom:10px;
+font-size:18px;
+}
+
+.program-item p{
+margin-bottom:12px;
+}
+
+.program-item span{
+color:#125985;
+font-size:14px;
+font-weight:800;
+}
 }
