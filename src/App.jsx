@@ -37,7 +37,10 @@ export default function App() {
   }, [galleryOpen])
 
   const fakeLogin = () => {
-    if (login === 'astra' && password === 'marine2026') {
+    if (
+      login.trim().toLowerCase() === 'astra' &&
+      password.trim() === 'marine2026'
+    ) {
       setIsLoggedIn(true)
     } else {
       alert('Неверный логин или пароль')
@@ -58,6 +61,7 @@ export default function App() {
     const searchText = [
       item.title,
       item.category,
+      item.badge,
       item.ship,
       item.pier,
       item.format,
@@ -158,38 +162,36 @@ export default function App() {
           </button>
         </div>
 
-<div className="mobile-search-wrap">
-  <input
-    className="search mobile-search"
-    placeholder="Найти маршрут, теплоход, причал..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-  />
+        <div className="mobile-search-wrap">
+          <input
+            className="search mobile-search"
+            placeholder="Найти маршрут, теплоход, причал..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-  {search.trim().length > 0 && (
-    <div className="mobile-search-results">
-      {filteredRoutes.length > 0 ? (
-        filteredRoutes.map((item) => (
-          <button
-            key={item.id}
-            className="mobile-search-result"
-            onClick={() => {
-              selectRoute(item)
-              setSearch('')
-            }}
-          >
-            <span>{item.category}</span>
-            <strong>{item.title}</strong>
-          </button>
-        ))
-      ) : (
-        <div className="mobile-search-empty">
-          Ничего не найдено
+          {search.trim().length > 0 && (
+            <div className="mobile-search-results">
+              {filteredRoutes.length > 0 ? (
+                filteredRoutes.map((item) => (
+                  <button
+                    key={item.id}
+                    className="mobile-search-result"
+                    onClick={() => {
+                      selectRoute(item)
+                      setSearch('')
+                    }}
+                  >
+                    <span>{item.category}</span>
+                    <strong>{item.title}</strong>
+                  </button>
+                ))
+              ) : (
+                <div className="mobile-search-empty">Ничего не найдено</div>
+              )}
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  )}
-</div>
 
         <div className="sidebar-content">
           <button
@@ -291,11 +293,11 @@ export default function App() {
             <header className="hero">
               <div>
                 <p className="eyebrow">Паспорт маршрута</p>
+
                 {route.badge && (
-              <div className="route-badge">
-                {route.badge}
-              </div>
-               )}
+                  <div className="route-badge">{route.badge}</div>
+                )}
+
                 <h1>{route.title}</h1>
                 <p className="hero-text">{route.description}</p>
               </div>
@@ -370,6 +372,22 @@ export default function App() {
                 <h2>Билеты</h2>
                 <p>{route.tickets}</p>
               </div>
+
+              {route.program && (
+                <div className="card">
+                  <h2>Афиша мероприятий</h2>
+
+                  <div className="program-list">
+                    {route.program.map((item, index) => (
+                      <div className="program-item" key={index}>
+                        <strong>{item.title}</strong>
+                        <p>{item.text}</p>
+                        <span>{item.dates}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="card">
                 <h2>Служебная информация</h2>
