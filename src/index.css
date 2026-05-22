@@ -880,6 +880,7 @@ box-shadow:
 53,
 0.3
 );
+}
 .program-list{
 display:grid;
 gap:16px;
@@ -906,4 +907,4 @@ color:#125985;
 font-size:14px;
 font-weight:800;
 }
-}
+
