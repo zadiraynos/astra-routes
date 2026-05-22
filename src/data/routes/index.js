@@ -4,6 +4,7 @@ import { northernIslands } from './northernIslands.js'
 import { cityRivers } from './cityRivers.js'
 import { eveningIslands } from './eveningIslands.js'
 import { voz } from './voz.js'
+import { singOnNeva } from './singOnNeva.js'
 
 export const routes = [
   ppfz,
@@ -11,5 +12,6 @@ export const routes = [
   northernIslands,
   cityRivers,
   eveningIslands,
-  voz
+  voz,
+  singOnNeva,
 ]
